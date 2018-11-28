@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>04-自定义组件</title>
+    <script src="./lib/vue.v2.5.17.js"></script>
+</head>
+<script type="application/javascript">
+    // 1. 定义vue组件 my-blog
+    // 参数1： 组件名称，这个会在页面中作为标签使用到
+    // 参数2： 组件参数对象
+    //   data: 组件级别绑定的对象
+    //   props: 父组件向本组件传递的参数key数组
+    Vue.component('my-blog', {
+        template: `
+            <div>
+                <label>{{ blog.title }}</label>
+                <div>
+                    作者：<label>{{ blog.author }}</label>
+                    日期：<label>{{ blog.date }}</label>
+                </div>
+                <textarea @change="changeBlog">{{ blog.content }}</textarea>
+                <div>
+                    <button @click="agreeHandler">点赞 ({{ blog.agreeCount }})</button>
+                </div>
+            </div>
+        `,
+        props: {
+            blog: {type: Object, required: true,
+                validator: (obj) => { // 自定义校验参数方法
+                    if (obj.date instanceof Date) {
+                        return true
+                    }
+                    console.error('blog.title need a Date type')
+                    return false
+                }}
+        }, // 此参数名为 组件中可被绑定对象的属性名
+
+        methods: {
+            agreeHandler: function () {
+                // 回调父组件定义方法
+                this.$emit('agree')
+            },
+            changeBlog: function (val) {
+                console.log(`修改blog${val}`)
+                this.$emit('update:blog', val.srcElement.value)
+            }
+        }
+    })
+</script>
+<body>
+<!--2. 在页面使用自定义vue组件-->
+<div id="my-app">
+    <my-blog :blog="myBlog" @agree="doAgree" :blog.sync="myBlog"></my-blog>
+</div>
+</body>
+<script type="application/javascript">
+    // 3. 实例化vue实例
+    let vm = new Vue({
+        el: '#my-app',
+        data: {
+            myBlog: {
+                title: 'vue自定义组件',
+                author: '林勃',
+                date: new Date(),
+                content: '手打vue代码',
+                agreeCount: 0
+            }
+        },
+        methods: {
+            doAgree: function () {
+                this.myBlog.agreeCount++
+                console.log(`点赞 ${this.myBlog.agreeCount} 次`)
+            }
+        }
+    })
+</script>
+</html>

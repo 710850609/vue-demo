@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>01-自定义组件</title>
+    <script src="./lib/vue.v2.5.17.js"></script>
+</head>
+<script type="application/javascript">
+    // 1. 定义vue组件 my-blog
+    // 参数1： 组件名称，这个会在页面中作为标签使用到
+    // 参数2： 组件参数对象
+    //   data: 组件级别绑定的对象
+    //   props: 父组件向本组件传递的参数key数组
+    Vue.component('my-blog', {
+        data: function () {
+            return {
+                title: 'vue自定义组件例子',
+                author: 'lin bo',
+                date: '2018-11-27',
+                content: '手打vue组件'
+            }
+        },
+        template: `
+            <div>
+                <label>{{ title }}<label>
+                <div>
+                    作者：<label>{{ author }}</label>
+                    日期：<label>{{ date }}</label>
+                </div>
+                <hr>
+                <textarea>{{ content }}</textarea>
+            </div>
+        `
+    })
+
+</script>
+<body>
+<!--2. 在页面使用自定义vue组件-->
+<div id="my-app">
+    <my-blog></my-blog>
+</div>
+</body>
+<script type="application/javascript">
+    // 3. 实例化vue实例
+    let vm = new Vue({
+        el: '#my-app'
+    })
+</script>
+</html>
